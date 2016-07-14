@@ -1,0 +1,106 @@
+sitemap home label="CML"
+{
+	Frame {
+		Text label="Auto" icon="car" {
+	      Frame {
+			  Text item=Car_location_timestamp
+			  Text item=Car_speed
+			  Text item=Car_altitude
+			  Text item=Car_accuracy
+			  Text item=Car_current_place
+		    Text item=Car_dist_from_home
+	      }
+		  Frame label="Dnes" {
+		    Text item=Car_today_distance
+		    Text item=Car_today_maxSpeed
+		    Text item=Car_today_avgSpeed
+			Text item=Car_today_movingTime
+		  }
+		  Frame {
+   			  //Webview  url="/static/map.html"  height=10
+   			  Mapview item=Car_location height=12
+		  }
+		}
+	}
+	Frame {
+			Group item=LightLevel label="Osvětlení" icon="none"
+			Group item=Temp label="Teploty" icon="temperature"
+			Text label="Světla" icon="light" {
+				Frame {
+					Switch item=Lights mappings=[OFF="Vše zhasnout"]
+				}
+				Frame label="Obývák" {
+					Slider item=Light_obyvak_led label="Nad stolem [%d %%]" switchSupport
+				}
+				Frame label="Ložnice" {
+					Switch item=Light_loznice_led label="U postele"
+				}
+				Frame label="Dětský" {
+					Switch item=Light_detsky_led label="LED na stěně"
+					Switch item=Light_detsky_stul label="Nad stolem"
+					Slider item=Dimmer_detsky_lamp label="Barevná lampa [%d %%]" switchSupport
+					Switch item=Color_rgb_code label="Barvy" mappings=[0="Red", 1="Yellow", 2="Green", 3="Azure", 4="Blue", 5="Pink", 6="White"]
+				}
+			}
+			Text label="Astro" icon="sun" {
+				Text item=Astro_Sunrise_Time
+				Text item=Astro_Sunset_Time
+				Text item=Astro_Sun_Azimuth
+				Text item=Astro_Sun_Elevation
+			}
+			Text label="Kodi" icon="television" {
+				Frame {
+				     Slider item=KODI_Volume icon="volume"
+				     Switch item=KODI_PlayPause icon="playerplaypause" mappings=[ON="Play/Pause"]
+				     Switch item=KODI_Stop icon="playerstop" mappings=[ON="Stop"]
+				}
+				Frame {
+				     Text   item=KODI_State
+				     Text   item=KODI_Title
+				}
+				Frame {
+				     Text   item=KODI_SystemState 
+             Switch item=KODI_Reboot icon="none" mappings=[ON="Restart"]
+				}
+			}
+			Text label="Počasí" icon="weather" {
+				Group item=WeatherWeb label="WUnderground" icon="weather"
+  				Text item=Temperature_venku_disp  icon="temperature"
+  				Text item=Humidity_venku  icon="temperature"
+  				Text item=Pressure_disp
+  				Text item=Weather_Windspeed icon="wind"
+  				Text item=Weather_Winddirection icon="wind"
+  				Text item=Air_pm10_zabreh_disp valuecolor=[Air_index_zabreh==1="#C7EAFB", Air_index_zabreh==2="#9BD3AE", Air_index_zabreh==3="#FFF200", Air_index_zabreh==4="#FAA61A", Air_index_zabreh==5="#ED1C24", Air_index_zabreh==6="#671F20"]
+			}
+			Text label="Grafy" icon="chart" {
+				Text label="Vlhkost" icon="none" {
+					Switch item=Chart_Period label="Chart Period" mappings=[0="4h", 1="den", 2="týden", 3="měsíc"]
+				  Chart item=Humidity_venku period=4h refresh=6000 visibility=[Chart_Period==0, Chart_Period=="Uninitialized"]
+				  Chart item=Humidity_venku period=D refresh=30000 visibility=[Chart_Period==1]
+				  Chart item=Humidity_venku period=W refresh=30000 visibility=[Chart_Period==2]
+				  Chart item=Humidity_venku period=M refresh=30000 visibility=[Chart_Period==3]
+				}
+				Text label="Teploty" icon="temperature"{
+					Switch item=Chart_Period label="Chart Period" mappings=[0="4h", 1="den", 2="týden", 3="měsíc"]
+				  Chart item=Temp_chart period=4h refresh=6000 visibility=[Chart_Period==0, Chart_Period=="Uninitialized"]
+				  Chart item=Temp_chart period=D refresh=30000 visibility=[Chart_Period==1]
+				  Chart item=Temp_chart period=W refresh=30000 visibility=[Chart_Period==2]
+				  Chart item=Temp_chart period=M refresh=30000 visibility=[Chart_Period==3]
+			  }
+				Text label="Tlak" icon="none" {
+					Switch item=Chart_Period label="Chart Period" mappings=[0="4h", 1="den", 2="týden", 3="měsíc"]
+				  Chart item=Pressure period=4h refresh=6000 visibility=[Chart_Period==0, Chart_Period=="Uninitialized"]
+				  Chart item=Pressure period=D refresh=30000 visibility=[Chart_Period==1]
+				  Chart item=Pressure period=W refresh=30000 visibility=[Chart_Period==2]
+				  Chart item=Pressure period=M refresh=30000 visibility=[Chart_Period==3]
+				}
+				Text label="Světelnost" icon="none" {
+					Switch item=Chart_Period label="Chart Period" mappings=[0="4h", 1="den", 2="týden", 3="měsíc"]
+				  Chart item=LightLevel period=4h refresh=6000 visibility=[Chart_Period==0, Chart_Period=="Uninitialized"]
+				  Chart item=LightLevel period=D refresh=30000 visibility=[Chart_Period==1]
+				  Chart item=LightLevel period=W refresh=30000 visibility=[Chart_Period==2]
+				  Chart item=LightLevel period=M refresh=30000 visibility=[Chart_Period==3]
+				}
+			}
+		}
+}

@@ -1,0 +1,345 @@
+import org.openhab.core.library.types.*
+import org.openhab.core.persistence.*
+import org.openhab.model.script.actions.*
+import org.joda.time.*
+import java.util.*
+import java.text.SimpleDateFormat
+import java.lang.Math
+import org.eclipse.xtext.xbase.lib.*
+import org.openhab.core.items.*
+
+var String notificationEmail = "dusan.jaluvka@gmail.com"
+var String ArduinoUpdate = ""
+var String sketchName = ""
+
+var int V_TEMP = 0
+var int V_HUM = 1
+var int V_LIGHT = 2
+var int V_STATUS = 2
+var int V_DIMMER = 3
+var int V_PERCENTAGE = 3
+var int V_PRESSURE = 4
+var int V_FORECAST = 5
+var int V_RAIN = 6
+var int V_RAINRATE = 7
+var int V_WIND = 8
+var int V_GUST = 9
+var int V_DIRECTION = 10
+var int V_UV = 11
+var int V_WEIGHT = 12
+var int V_DISTANCE = 13
+var int V_IMPEDANCE = 14
+var int V_ARMED = 15
+var int V_TRIPPED = 16
+var int V_WATT = 17
+var int V_KWH = 18
+var int V_SCENE_ON = 19
+var int V_SCENE_OFF = 20
+var int V_HEATER = 21
+var int V_HEATER_SW = 22
+var int V_LIGHT_LEVEL = 23
+var int V_VAR1 = 24
+var int V_VAR2 = 25
+var int V_VAR3 = 26
+var int V_VAR4 = 27
+var int V_VAR5 = 28
+var int V_UP = 29
+var int V_DOWN = 30
+var int V_STOP = 31
+var int V_IR_SEND = 32
+var int V_IR_RECEIVE = 33
+var int V_FLOW = 34
+var int V_VOLUME = 35
+var int V_LOCK_STATUS = 36
+var int V_DUST_LEVEL = 37
+var int V_VOLTAGE = 38
+var int V_CURRENT = 39
+var int V_RGB = 40
+var int msgPresentation = 0
+var int msgSet = 1
+var int msgReq = 2
+var int msgInternal = 3
+var int msgStream = 4
+var int alarmArmor = 1
+
+// Internal Commands
+
+var int I_BATTERY_LEVEL = 0
+var int I_TIME = 1
+var int I_VERSION = 2
+var int I_ID_REQUEST = 3
+var int I_ID_RESPONSE = 4
+var int I_INCLUSION_MODE = 5
+var int I_CONFIG = 6
+var int I_FIND_PARENT = 7
+var int I_FIND_PARENT_RESPONSE = 8
+var int I_LOG_MESSAGE = 9
+var int I_CHILDREN = 10
+var int I_SKETCH_NAME = 11
+var int I_SKETCH_VERSION = 12
+var int I_REBOOT = 13
+var int I_GATEWAY_READY = 14
+
+var int NODE_BEDROOM = 20
+var int NODE_KITCHEN = 22
+var int NODE_CHILDRENROOM = 24
+var int NODE_LIVINGROOM = 26
+var int NODE_RGBLAMP = 28
+
+// Mappings
+var HashMap<String, String> sensorToItemsMap = newLinkedHashMap(
+    "20;0;"               -> "Temperature_balkon",
+    "Temperature_balkon"  -> "20;0;",
+    "20;1;"               -> "Temperature_loznice",
+    "Temperature_loznice" -> "20;1;",
+    "20;10;"              -> "Light_loznice_led",
+    "Light_loznice_led"   -> "20;10;",
+    "20;20;"              -> "Light_level_loznice",
+    "Light_level_loznice" -> "20;20;",
+    "20;30;"              -> "Motion_loznice",
+    "Motion_loznice"      -> "20;30;",
+
+    "24;0;"               -> "Temperature_detsky",
+    "Temperature_detsky"  -> "24;0;",
+    "24;1;"               -> "Light_detsky_stul",
+    "Light_detsky_stul"   -> "24;1;",
+    "24;2;"               -> "Light_detsky_led",
+    "Light_detsky_led"    -> "24;2;",
+
+    "22;0;"               -> "Temperature_router",
+    "Temperature_router"  -> "22;0;",
+    "22;1;"               -> "Temperature_venku",
+    "Temperature_venku"   -> "22;1;",
+    "22;40;"              -> "Temperature_venku_dht",
+    "Temperature_venku_dht" -> "22;40;",
+    "22;20;"              -> "Light_level_venku",
+    "Light_level_venku"   -> "22;20;",
+    "22;30;"              -> "Humidity_venku",
+    "Humidity_venku"      -> "22;30;",
+
+    "26;1;"               -> "Temperature_obyvak",
+    "Temperature_obyvak"  -> "26;1;",
+    "26;2;"               -> "Pressure",
+    "Pressure"            -> "26;2;",
+    "26;10;"              -> "Light_obyvak_led",
+    "Light_obyvak_led"    -> "26;10;",
+    "26;20;"               -> "Light_level_obyvak",
+    "Light_level_obyvak"  -> "26;20;",
+    
+    "28;1;"               -> "Dimmer_detsky_lamp",
+    "Dimmer_detsky_lamp"  -> "28;1;"
+)
+
+
+// dimmer function
+val org.eclipse.xtext.xbase.lib.Functions$Function5 dimmerOperation = [
+    org.openhab.core.library.items.DimmerItem dimmerItem, 
+    org.openhab.core.library.items.StringItem arduinoItem, 
+    String arduinoDevMap,
+    String receivedCommand,
+    Integer subType|
+    var Number percent = 0
+    if(dimmerItem.state instanceof DecimalType) percent = dimmerItem.state as DecimalType
+    if(receivedCommand==INCREASE) percent = percent + 5
+    if(receivedCommand==DECREASE) percent = percent - 5
+    if(receivedCommand==ON) percent = 100       
+    if(receivedCommand==OFF) percent = 0        
+    if(percent<0)   percent = 0
+    if(percent>100) percent = 100
+    
+    println ("Function: dimmerOperation >> "+arduinoDevMap + "1;1;" + subType + ";" + percent )
+    arduinoItem.sendCommand(arduinoDevMap + "1;0;" + subType + ";" + percent + "\n")
+]
+
+//switch function
+val org.eclipse.xtext.xbase.lib.Functions$Function4 switchOperation = [
+    org.openhab.core.library.items.SwitchItem relayItem, 
+    org.openhab.core.library.items.StringItem arduinoItem, 
+    String arduinoDevMap,
+    Integer subType|
+    var Integer state = 0
+        if (relayItem.state == OFF) {
+        state = 0 
+    }
+    else {
+        state = 1
+    }
+    println ("Function: switchOperation >> "+arduinoDevMap + "1;1;" + subType + ";" + state )
+    arduinoItem.sendCommand(arduinoDevMap + "1;1;" + subType + ";" + state + "\n")
+]
+
+    
+
+//receiving msg from mysensors gateway
+rule "Arduino sends to Openhab"
+    when
+        Item Arduino received update
+    then
+        var String[] lineBuffer =  Arduino.state.toString.split("\n")
+        for (String line : lineBuffer) {
+            var String[] message = line.split(";")
+            var Integer nodeId = new Integer(message.get(0))
+            var Integer childId = new Integer(message.get(1))
+            var Integer msgType = new Integer(message.get(2))
+            var Integer ack = new Integer(message.get(3))
+            var Integer subType = new Integer(message.get(4))
+            var String msg = message.get(5)
+            
+            
+            
+            if(msgType == 1 ){
+            	
+            	if (nodeId == NODE_BEDROOM) {
+            		postUpdate(MySensors_BEDROOM_Last_Update, new DateTimeType())
+            	} else if (nodeId == NODE_KITCHEN) {
+            		postUpdate(MySensors_KITCHEN_Last_Update, new DateTimeType())
+            	} else if (nodeId == NODE_CHILDRENROOM) {
+            		postUpdate(MySensors_CHILDRENROOM_Last_Update, new DateTimeType())
+            	} else if (nodeId == NODE_LIVINGROOM) {
+            		postUpdate(MySensors_LIVINGROOM_Last_Update, new DateTimeType())
+            	}
+            		
+            
+            	
+                if (subType == V_TEMP){
+                    postUpdate(sensorToItemsMap.get( nodeId + ";" + childId + ";"), msg)
+                    println ("Temp item: " + sensorToItemsMap.get( nodeId + ";" + childId + ";") + " temp: " + msg )
+                } else
+                if (subType == V_LIGHT_LEVEL){
+                    postUpdate(sensorToItemsMap.get( nodeId + ";" + childId + ";"), msg)
+                    println ("Light level item: " + sensorToItemsMap.get( nodeId + ";" + childId + ";") + " light: " + msg )
+                } else
+                if (subType == V_PRESSURE){
+                    postUpdate(sensorToItemsMap.get( nodeId + ";" + childId + ";"), msg)
+                    println ("Pressure item: " + sensorToItemsMap.get( nodeId + ";" + childId + ";") + " pressure: " + msg )
+                } else
+                if (subType == V_DIMMER){
+                    postUpdate(sensorToItemsMap.get( nodeId + ";" + childId + ";"), msg)
+                    println ("Dimmer item: " + sensorToItemsMap.get( nodeId + ";" + childId + ";") + " dimmer: " + msg )
+                } else
+                if (subType == V_LIGHT){
+                    var String m = "OFF"
+                    if ("1".equals(msg)) {
+                      m = "ON"
+                    }
+                    postUpdate(sensorToItemsMap.get( nodeId + ";" + childId + ";"), m)
+                    println ("Light item: " + sensorToItemsMap.get( nodeId + ";" + childId + ";") + " light: " + m )
+                } else
+                if (subType == V_TRIPPED){
+                    var String m = "OFF"
+                    if ("1".equals(msg)) {
+                      m = "ON"
+                    }
+                    postUpdate(sensorToItemsMap.get( nodeId + ";" + childId + ";"), m)
+                    println ("Switch/contact/motion item: " + sensorToItemsMap.get( nodeId + ";" + childId + ";") + " state: " + m )
+                } else
+                if (subType == V_HUM){
+                    postUpdate(sensorToItemsMap.get( nodeId + ";" + childId + ";"), msg)
+                    println ("Hum item: " + sensorToItemsMap.get( nodeId + ";" + childId + ";") + " hum: " + msg )
+                } else 
+                if (subType == V_RGB){
+                	var Integer colorNumber = 100
+                	if ("FF0000".equals(msg)){
+                		colorNumber = 0
+                	} else if ("FFFF00".equals(msg)){
+                		colorNumber = 1
+                	} else if ("00FF00".equals(msg)){
+                		colorNumber = 2
+                	} else if ("00FFFF".equals(msg)){
+                		colorNumber = 3
+                	} else if ("0000FF".equals(msg)){
+                		colorNumber = 4
+                	} else if ("FF00FF".equals(msg)){
+                		colorNumber = 5
+                	}  else if ("FFFFFF".equals(msg)){
+                		colorNumber = 6
+                	}
+                  postUpdate(Color_rgb_code, colorNumber)
+                  println ("RGB item: " + " rgb: " + msg )
+                } else {
+                	logError ("arduino-rules", "Unsupported message subtype: " + subType)
+                }
+            }    
+            // Internal Command
+            if(msgType == 3){
+                if(subType == I_SKETCH_NAME){
+                        println("Sketch name: " + msg )
+                        sketchName=msg
+                    }
+                if(subType == I_SKETCH_VERSION){
+                        println("Sketch version: " + msg )
+                        postUpdate(sensorToItemsMap.get( nodeId + ";" + childId + ";"), sketchName+" " +msg )
+                        sketchName=""
+                }
+//                if(subType == I_ID_REQUEST){
+//                        println("Request node ID: " + msg )
+//                        Arduino.sendCommand("255;255;3;0;4;20\n");
+//                }
+            }   
+        }
+end
+
+rule "Light_loznice_led Switch Rule"
+    when
+        Item Light_loznice_led received command
+    then
+        switchOperation.apply(Light_loznice_led, Arduino, sensorToItemsMap.get("Light_loznice_led"), V_LIGHT)  
+end 
+
+rule "Light_obyvak_led Dimmer Rule"
+    when
+        Item Light_obyvak_led received command
+    then
+        dimmerOperation.apply(Light_obyvak_led, Arduino, sensorToItemsMap.get("Light_obyvak_led"), receivedCommand, V_DIMMER)         
+end 
+
+rule "Dimmer_detsky_lamp Dimmer Rule"
+    when
+        Item Dimmer_detsky_lamp received command
+    then
+        dimmerOperation.apply(Dimmer_detsky_lamp, Arduino, sensorToItemsMap.get("Dimmer_detsky_lamp"), receivedCommand, V_DIMMER)         
+end 
+
+rule "Light_detsky_stul Switch Rule"
+    when
+        Item Light_detsky_stul received command
+    then
+        switchOperation.apply(Light_detsky_stul, Arduino, sensorToItemsMap.get("Light_detsky_stul"), V_LIGHT)         
+end 
+
+rule "Light_detsky_led Switch Rule"
+    when
+        Item Light_detsky_led received command
+    then
+        switchOperation.apply(Light_detsky_led, Arduino, sensorToItemsMap.get("Light_detsky_led"), V_LIGHT)         
+end 
+
+rule "TEST Color Rule"
+    when
+        Item Color_rgb_code received command
+    then
+    var String colorCode = "000000"
+    var Integer col = new Integer(Color_rgb_code.state.toString)
+      if (col == 0) {
+       colorCode = "FF0000"
+      } else       
+      if (col == 1) {
+       colorCode = "FFFF00"
+      } else
+      if (col == 2) {
+       colorCode = "00FF00"
+      } else 
+      if (col == 3) {
+       colorCode = "00FFFF"
+      } else
+      if (col == 4) {
+       colorCode = "0000FF"
+      } else
+      if (col == 5) {
+       colorCode = "FF00FF"
+      } else
+      if (col == 6) {
+       colorCode = "FFFFFF"
+      } 
+      Arduino.sendCommand("28;1;1;0;40;" + colorCode + "\n")
+end 
