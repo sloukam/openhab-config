@@ -21,13 +21,16 @@ Items {
 	// * : strategy = everyChange, everyDay, restoreOnStartup
 	
 	// persist all temperature and weather values at every change and every hour
-	Temperature_venku : strategy = every5Minutes
+	
+	Temperature_technicka : strategy = every5Minutes
 	Temperature_obyvak : strategy = every5Minutes
+	Humidity_obyvak : strategy = every5Minutes
+
+	Temperature_venku : strategy = every5Minutes
 	Temperature_detsky : strategy = every5Minutes
 	Temperature_loznice : strategy = every5Minutes
 	Temperature_balkon : strategy = every5Minutes
 	Temperature_venku_dht : strategy = every5Minutes
-	Humidity_venku : strategy = every5Minutes
 	Pressure : strategy = everyHour
 	Pressure_normal : strategy = everyDay
 	Light_level_loznice : strategy = every5Minutes

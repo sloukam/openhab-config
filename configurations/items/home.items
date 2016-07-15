@@ -1,4 +1,4 @@
-Group byt 		(All)
+Group dum 		(All)
 Group Hidden    (All)
 Group Humidity 	(All)
 Group Chmi      (All)
@@ -14,10 +14,11 @@ Group Weather 	(All)
 Group WeatherWeb 	(All)
 Group KODI      (All)
 
-Group byt_Living 	"Obývák"  	    <sofa>     (byt)
-Group byt_Kuchyn 	"Kuchyň"  	    <sofa>     (byt)
-Group byt_Detsky 	"Dětský pokoj"  <sofa>     (byt)
-Group byt_Loznice 	"Ložnice"  	    <sofa>     (byt)
+Group dum_Living 	"Obývák"  	    <sofa>     (dum)
+Group dum_Kuchyn 	"Kuchyň"  	    <sofa>     (dum)
+Group dum_Detsky 	"Dětský pokoj"  <sofa>     (dum)
+Group dum_Loznice 	"Ložnice"  	    <sofa>     (dum)
+Group dum_Technicka	"Technicka"		<sofa>     (dum)
 
 /* active groups */
 Group:Number:AVG 				Temp_avg	"Průměr uvnitř [%.1f °C]" 	<temperature>	(Status, Temp)
@@ -26,15 +27,15 @@ Group:Switch:OR(ON, OFF) 		Lights 		"Všechna světla [(%d)]" 								(All)
 Number Chart_Period		"Chart Period"
 
 /* Lights */
-//Switch Light_byt_Living_Computer    "LED Strip"         (Hidden) {mqtt=">[mqttbroker:openHAB/out/Light_byt_Living_Computer/command:command:ON:1],>[mybroker:openHAB/out/Light_byt_Living_Computer/command:command:OFF:0]"}
-Switch Light_detsky_led             "Dětský LED"               (Lights, byt_Detsky) 
-Switch Light_detsky_stul            "Dětský nad stolem" (Lights, byt_Detsky) 
-Switch Light_loznice_led            "Ložnice LED"       (Lights, byt_Loznice) 
-Dimmer Light_obyvak_led             "Obývák LED [%d %%]"   <slider>     (Lights, byt_Living)
+//Switch Light_dum_Living_Computer    "LED Strip"         (Hidden) {mqtt=">[mqttbroker:openHAB/out/Light_dum_Living_Computer/command:command:ON:1],>[mybroker:openHAB/out/Light_dum_Living_Computer/command:command:OFF:0]"}
+Switch Light_detsky_led             "Dětský LED"               (Lights, dum_Detsky) 
+Switch Light_detsky_stul            "Dětský nad stolem" (Lights, dum_Detsky) 
+Switch Light_loznice_led            "Ložnice LED"       (Lights, dum_Loznice) 
+Dimmer Light_obyvak_led             "Obývák LED [%d %%]"   <slider>     (Lights, dum_Living)
 
 /* Motion sensors */
-Switch Motion_loznice        "Pohyb"                             (byt_Loznice) 
-Number Motion_loznice_5min   "Pohyb loznice [MAP(pohyb.map):%s]" (byt_Loznice) 
+Switch Motion_loznice        "Pohyb"                             (dum_Loznice) 
+Number Motion_loznice_5min   "Pohyb loznice [MAP(pohyb.map):%s]" (dum_Loznice) 
  
 /* MySensors */
 String Arduino "Arduino" { serial="/dev/ttyUSB0@115200" }
@@ -44,15 +45,16 @@ DateTime MySensors_CHILDRENROOM_Last_Update "Aktualizace detsky [%1$ta %1$tR]" (
 DateTime MySensors_LIVINGROOM_Last_Update "Aktualizace obyvak [%1$ta %1$tR]" (MySensors, Status)
 
 /* Indoor Temperatures */
-//Number Temperature_byt_Living  "Teplota obyvak [%.1f °C]"	<temperature>	(Hidden) {mqtt="<[mqttbroker:openHAB/in/Temperature_byt_Living/state:state:default]"}
-Number Temperature_obyvak      "Teplota obývák [%.1f °C]"	<temperature>	(Temp, Temp_avg, Temp_chart, byt_Living) 
-Number Temperature_detsky 	   "Teplota detsky [%.1f °C]"	<temperature>	(Temp, Temp_avg, byt_Detsky)
-Number Temperature_loznice 	   "Teplota loznice [%.1f °C]"	<temperature>	(Temp, Temp_avg, byt_Loznice)
-Number Temperature_balkon 	   "Teplota balkon[%.1f °C]"	<temperature>	(Temp, Temp_chart, byt_Loznice)
-Number Temperature_router 	   "Teplota router[%.1f °C]"	<temperature>	(Temp, byt_Kuchyn)
+//Number Temperature_dum_Living  "Teplota obyvak [%.1f °C]"	<temperature>	(Hidden) {mqtt="<[mqttbroker:openHAB/in/Temperature_dum_Living/state:state:default]"}
+Number Temperature_obyvak      "Teplota obývák [%.1f °C]"	<temperature>	(Temp, Temp_avg, Temp_chart, dum_Living) 
+Number Temperature_detsky 	   "Teplota detsky [%.1f °C]"	<temperature>	(Temp, Temp_avg, dum_Detsky)
+Number Temperature_loznice 	   "Teplota loznice [%.1f °C]"	<temperature>	(Temp, Temp_avg, dum_Loznice)
+Number Temperature_balkon 	   "Teplota balkon[%.1f °C]"	<temperature>	(Temp, Temp_chart, dum_Loznice)
+Number Temperature_router 	   "Teplota router[%.1f °C]"	<temperature>	(Temp, dum_Kuchyn)
+Number Temperature_technicka   "Teplota technická [%.1f °C]"	<temperature>	(Temp, Temp_avg, Temp_chart, dum_Technicka) 
 
-Number Light_level_loznice 	"Osvetleni loznice [%.1f %%]"	<temperature>	(LightLevel, byt_Loznice)
-Number Light_level_obyvak 	"Osvetleni obyvak [%.1f %%]"	<temperature>	(LightLevel, byt_Living)
+Number Light_level_loznice 	"Osvetleni loznice [%.1f %%]"	<temperature>	(LightLevel, dum_Loznice)
+Number Light_level_obyvak 	"Osvetleni obyvak [%.1f %%]"	<temperature>	(LightLevel, dum_Living)
 Number Light_level_venku 	"Osvetleni venku [%.1f %%]"	    <temperature>	(LightLevel, venku)
 
 
@@ -63,9 +65,9 @@ Number Temperature_venku_dht 	"Teplota venku dht [%.1f °C]"	<temperature>	(Weat
 Number Humidity_venku    		"Vlhkost venku [%.1f %%]"	<temperature>	(Weather, Humidity, venku)
 Number Humidity_venku_5min_avg    		"Vlhkost venku 5min [%.1f %%]"	<temperature>	(Weather, venku)
 
-Number Humidity_byt 			"Vlhkost [%.1f %%]"			<temperature>	(Weather) 				{mqtt="<[mqttbroker:openHAB/in/Humidity_byt/state:state:default]"}
-Number Pressure 				"Tlak [%.1f hPa]"			<temperature>	(Weather, byt_Living) 	
-String Pressure_disp 			"Tlak [%s]"					<temperature>	(Weather, byt_Living)
+Number Humidity_dum 			"Vlhkost [%.1f %%]"			<temperature>	(Weather) 				{mqtt="<[mqttbroker:openHAB/in/Humidity_dum/state:state:default]"}
+Number Pressure 				"Tlak [%.1f hPa]"			<temperature>	(Weather, dum_Living) 	
+String Pressure_disp 			"Tlak [%s]"					<temperature>	(Weather, dum_Living)
 Number Air_pm10_zabreh 			"PM10 [%d]"									(Weather, Chmi) 		{http="<[chmiair:300000:XSLT(air_pm10_1h_zabreh.xsl)]"}
 Number Air_index_zabreh 		"Index kvality [%d]"						(Weather, Chmi) 		{http="<[chmiair:300000:XSLT(air_index_zabreh.xsl)]"}
 DateTime Air_data_time 			"Datum platnosti [%1$ta %1$tR]" 			(Weather, Chmi) 		{http="<[chmiair:300000:XSLT(air_data_time.xsl)]"}
@@ -93,7 +95,10 @@ Switch KODI_Reboot "Restart Raspberry"      (KODI) { exec=">[ON:/bin/sh@@-c@@~/b
 String KODI_Notification "Notification [%s]" (KODI) { xbmc=">[#openelec|GUI.ShowNotification]" }
 
 /* NETWORK */
+/*
 Switch Network_Jamac   "iMac"   (Status, Network)   { nh="192.168.0.111", wol="192.168.0.255#d4:9a:20:d5:a3:0c", exec=">[OFF:/bin/sh@@-c@@~/bin/sleepmac.sh]" }
 Switch Network_Ipad   "iPad"   (Status, Network)   { nh="192.168.0.110" }
 Switch Network_Xbmc   "xbmc"   (Status, Network)   { nh="192.168.0.112" }
 Switch Network_Nas   "NAS"   (Status, Network)   { nh="192.168.0.120" }
+*/
+

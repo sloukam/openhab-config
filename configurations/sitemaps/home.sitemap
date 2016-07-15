@@ -66,7 +66,7 @@ sitemap home label="CML"
 			Text label="Počasí" icon="weather" {
 				Group item=WeatherWeb label="WUnderground" icon="weather"
   				Text item=Temperature_venku_disp  icon="temperature"
-  				Text item=Humidity_venku  icon="temperature"
+  				Text item=Humidity_obyvak  icon="temperature"
   				Text item=Pressure_disp
   				Text item=Weather_Windspeed icon="wind"
   				Text item=Weather_Winddirection icon="wind"
@@ -75,10 +75,10 @@ sitemap home label="CML"
 			Text label="Grafy" icon="chart" {
 				Text label="Vlhkost" icon="none" {
 					Switch item=Chart_Period label="Chart Period" mappings=[0="4h", 1="den", 2="týden", 3="měsíc"]
-				  Chart item=Humidity_venku period=4h refresh=6000 visibility=[Chart_Period==0, Chart_Period=="Uninitialized"]
-				  Chart item=Humidity_venku period=D refresh=30000 visibility=[Chart_Period==1]
-				  Chart item=Humidity_venku period=W refresh=30000 visibility=[Chart_Period==2]
-				  Chart item=Humidity_venku period=M refresh=30000 visibility=[Chart_Period==3]
+				  Chart item=Humidity_obyvak period=4h refresh=6000 visibility=[Chart_Period==0, Chart_Period=="Uninitialized"]
+				  Chart item=Humidity_obyvak period=D refresh=30000 visibility=[Chart_Period==1]
+				  Chart item=Humidity_obyvak period=W refresh=30000 visibility=[Chart_Period==2]
+				  Chart item=Humidity_obyvak period=M refresh=30000 visibility=[Chart_Period==3]
 				}
 				Text label="Teploty" icon="temperature"{
 					Switch item=Chart_Period label="Chart Period" mappings=[0="4h", 1="den", 2="týden", 3="měsíc"]
