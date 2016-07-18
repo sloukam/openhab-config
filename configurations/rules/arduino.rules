@@ -120,8 +120,8 @@ var HashMap<String, String> sensorToItemsMap = newLinkedHashMap(
     "26;0;"               -> "Temperature_technicka",
     "Temperature_technicka"  -> "26;0;",
     
-    "27;00;"              -> "Humidity_obyvak",
-    "Humidity_obyvak"      -> "27;00;",
+    "27;0;"              -> "Humidity_obyvak",
+    "Humidity_obyvak"      -> "27;0;",
     
     "27;1;"               -> "Temperature_obyvak",
     "Temperature_obyvak"  -> "27;1;",

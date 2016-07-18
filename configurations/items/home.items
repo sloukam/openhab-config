@@ -28,14 +28,14 @@ Number Chart_Period		"Chart Period"
 
 /* Lights */
 //Switch Light_dum_Living_Computer    "LED Strip"         (Hidden) {mqtt=">[mqttbroker:openHAB/out/Light_dum_Living_Computer/command:command:ON:1],>[mybroker:openHAB/out/Light_dum_Living_Computer/command:command:OFF:0]"}
-Switch Light_detsky_led             "Dětský LED"               (Lights, dum_Detsky) 
-Switch Light_detsky_stul            "Dětský nad stolem" (Lights, dum_Detsky) 
-Switch Light_loznice_led            "Ložnice LED"       (Lights, dum_Loznice) 
-Dimmer Light_obyvak_led             "Obývák LED [%d %%]"   <slider>     (Lights, dum_Living)
+//Switch Light_detsky_led             "Dětský LED"               (Lights, dum_Detsky) 
+//Switch Light_detsky_stul            "Dětský nad stolem" (Lights, dum_Detsky) 
+//Switch Light_loznice_led            "Ložnice LED"       (Lights, dum_Loznice) 
+//Dimmer Light_obyvak_led             "Obývák LED [%d %%]"   <slider>     (Lights, dum_Living)
 
 /* Motion sensors */
-Switch Motion_loznice        "Pohyb"                             (dum_Loznice) 
-Number Motion_loznice_5min   "Pohyb loznice [MAP(pohyb.map):%s]" (dum_Loznice) 
+//Switch Motion_loznice        "Pohyb"                             (dum_Loznice) 
+//Number Motion_loznice_5min   "Pohyb loznice [MAP(pohyb.map):%s]" (dum_Loznice) 
  
 /* MySensors */
 String Arduino "Arduino" { serial="/dev/ttyUSB0@115200" }
@@ -46,19 +46,23 @@ DateTime MySensors_LIVINGROOM_Last_Update "Aktualizace obyvak [%1$ta %1$tR]" (My
 
 /* Indoor Temperatures */
 //Number Temperature_dum_Living  "Teplota obyvak [%.1f °C]"	<temperature>	(Hidden) {mqtt="<[mqttbroker:openHAB/in/Temperature_dum_Living/state:state:default]"}
-Number Temperature_obyvak      "Teplota obývák [%.1f °C]"	<temperature>	(Temp, Temp_avg, Temp_chart, dum_Living) 
-Number Temperature_detsky 	   "Teplota detsky [%.1f °C]"	<temperature>	(Temp, Temp_avg, dum_Detsky)
-Number Temperature_loznice 	   "Teplota loznice [%.1f °C]"	<temperature>	(Temp, Temp_avg, dum_Loznice)
-Number Temperature_balkon 	   "Teplota balkon[%.1f °C]"	<temperature>	(Temp, Temp_chart, dum_Loznice)
-Number Temperature_router 	   "Teplota router[%.1f °C]"	<temperature>	(Temp, dum_Kuchyn)
-Number Temperature_technicka   "Teplota technická [%.1f °C]"	<temperature>	(Temp, Temp_avg, Temp_chart, dum_Technicka) 
+//Number Temperature_obyvak      "Teplota obývák [%.1f °C]"	<temperature>	(Temp, Temp_avg, Temp_chart, dum_Living) 
+//Number Temperature_detsky 	   "Teplota detsky [%.1f °C]"	<temperature>	(Temp, Temp_avg, dum_Detsky)
+//Number Temperature_loznice 	   "Teplota loznice [%.1f °C]"	<temperature>	(Temp, Temp_avg, dum_Loznice)
+//Number Temperature_balkon 	   "Teplota balkon[%.1f °C]"	<temperature>	(Temp, Temp_chart, dum_Loznice)
+//Number Temperature_router 	   "Teplota router[%.1f °C]"	<temperature>	(Temp, dum_Kuchyn)
 
-Number Light_level_loznice 	"Osvetleni loznice [%.1f %%]"	<temperature>	(LightLevel, dum_Loznice)
-Number Light_level_obyvak 	"Osvetleni obyvak [%.1f %%]"	<temperature>	(LightLevel, dum_Living)
-Number Light_level_venku 	"Osvetleni venku [%.1f %%]"	    <temperature>	(LightLevel, venku)
+Number Temperature_technicka   "Teplota technická [%.1f °C]"	<temperature>	(Temp, Temp_avg, Temp_chart, dum_Technicka) 
+Number Temperature_obyvak      "Teplota obývák [%.1f °C]"	<temperature>	(Temp, Temp_avg, Temp_chart, dum_Living) 
+
+//Number Light_level_loznice 	"Osvetleni loznice [%.1f %%]"	<temperature>	(LightLevel, dum_Loznice)
+//Number Light_level_obyvak 	"Osvetleni obyvak [%.1f %%]"	<temperature>	(LightLevel, dum_Living)
+//Number Light_level_venku 	"Osvetleni venku [%.1f %%]"	    <temperature>	(LightLevel, venku)
 
 
 /* Weather */
+Number Humidity_obyvak 			"Vlhkost [%.1f %%]"			<temperature>	(Weather, Temp, dum_Living) 				{mqtt="<[mqttbroker:openHAB/in/Humidity_obyvak/state:state:default]"}
+/*
 Number Temperature_venku 		"Teplota venku[%.1f °C]"	<temperature>	(Weather, Temp, Temp_chart, venku)
 String Temperature_venku_disp 	"Teplota [%s]"				<temperature>	(Weather, venku)
 Number Temperature_venku_dht 	"Teplota venku dht [%.1f °C]"	<temperature>	(Weather, Temp, venku)
@@ -72,19 +76,21 @@ Number Air_pm10_zabreh 			"PM10 [%d]"									(Weather, Chmi) 		{http="<[chmiair
 Number Air_index_zabreh 		"Index kvality [%d]"						(Weather, Chmi) 		{http="<[chmiair:300000:XSLT(air_index_zabreh.xsl)]"}
 DateTime Air_data_time 			"Datum platnosti [%1$ta %1$tR]" 			(Weather, Chmi) 		{http="<[chmiair:300000:XSLT(air_data_time.xsl)]"}
 String Air_pm10_zabreh_disp 	"Prach Zábřeh [%s]"							(Weather) 
+*/
 
 /* Weather underground */
-Number   Weather_Humidity            "Humidity [%d %%]"           (WeatherWeb)  {weather="locationId=ostrava, type=atmosphere, property=humidity"}
-Number   Weather_Windspeed           "Windspeed [%.2f km/h]"      (WeatherWeb)  {weather="locationId=ostrava, type=wind, property=speed"}
-String   Weather_Winddirection       "Wind direction [%s]"        (WeatherWeb)  {weather="locationId=ostrava, type=wind, property=direction"}
-Number   Weather_Forecast_Temp_Min   "Temp today min [%.2f °C]"   (WeatherWeb)  {weather="locationId=ostrava, forecast=0, type=temperature, property=min"}
-Number   Weather_Forecast_Temp_Max   "Temp today max [%.2f °C]"   (WeatherWeb)  {weather="locationId=ostrava, forecast=0, type=temperature, property=max"}
+//Number   Weather_Humidity            "Humidity [%d %%]"           (WeatherWeb)  {weather="locationId=ostrava, type=atmosphere, property=humidity"}
+//Number   Weather_Windspeed           "Windspeed [%.2f km/h]"      (WeatherWeb)  {weather="locationId=ostrava, type=wind, property=speed"}
+//String   Weather_Winddirection       "Wind direction [%s]"        (WeatherWeb)  {weather="locationId=ostrava, type=wind, property=direction"}
+//Number   Weather_Forecast_Temp_Min   "Temp today min [%.2f °C]"   (WeatherWeb)  {weather="locationId=ostrava, forecast=0, type=temperature, property=min"}
+//Number   Weather_Forecast_Temp_Max   "Temp today max [%.2f °C]"   (WeatherWeb)  {weather="locationId=ostrava, forecast=0, type=temperature, property=max"}
 
-Color Color_detsky_lamp "rgb lampa" 
-Dimmer Dimmer_detsky_lamp "Barevná lampa" (Light)
-Number Color_rgb_code 
+//Color Color_detsky_lamp "rgb lampa" 
+//Dimmer Dimmer_detsky_lamp "Barevná lampa" (Light)
+//Number Color_rgb_code 
 
 /* KODI */
+/*
 Dimmer KODI_Volume "Volume [%.1f]"          (KODI) { xbmc="=[#openelec|Application.Volume]" }
 String KODI_State "State [%s]"              (KODI) { xbmc="<[#openelec|Player.State]" }
 String KODI_Title "Title [%s]"              (KODI) { xbmc="<[#openelec|Player.Title]" }
@@ -93,6 +99,7 @@ Switch KODI_Stop "Stop"                     (KODI) { xbmc=">[#openelec|Player.St
 Switch KODI_SystemState "System state [%s]" (KODI) { xbmc="<[#openelec|System.State]" }
 Switch KODI_Reboot "Restart Raspberry"      (KODI) { exec=">[ON:/bin/sh@@-c@@~/bin/rebootxbmc.sh]"}
 String KODI_Notification "Notification [%s]" (KODI) { xbmc=">[#openelec|GUI.ShowNotification]" }
+*/
 
 /* NETWORK */
 /*
