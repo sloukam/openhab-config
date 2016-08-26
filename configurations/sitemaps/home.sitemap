@@ -94,7 +94,7 @@ sitemap home label="CML"
 				  Chart item=Pressure period=W refresh=30000 visibility=[Chart_Period==2]
 				  Chart item=Pressure period=M refresh=30000 visibility=[Chart_Period==3]
 				}
-				Text label="Světelnost" icon="light_on" {
+				Text label="Světelnost" icon="light-on" {
 					Switch item=Chart_Period label="Chart Period" mappings=[0="4h", 1="den", 2="týden", 3="měsíc"]
 				  Chart item=LightLevel period=4h refresh=6000 visibility=[Chart_Period==0, Chart_Period=="Uninitialized"]
 				  Chart item=LightLevel period=D refresh=30000 visibility=[Chart_Period==1]
