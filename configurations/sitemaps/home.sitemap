@@ -73,7 +73,7 @@ sitemap home label="CML"
   				Text item=Air_pm10_zabreh_disp valuecolor=[Air_index_zabreh==1="#C7EAFB", Air_index_zabreh==2="#9BD3AE", Air_index_zabreh==3="#FFF200", Air_index_zabreh==4="#FAA61A", Air_index_zabreh==5="#ED1C24", Air_index_zabreh==6="#671F20"]
 			}
 			Text label="Grafy" icon="chart" {
-				Text label="Vlhkost" icon="none" {
+				Text label="Vlhkost" icon="water" {
 					Switch item=Chart_Period label="Chart Period" mappings=[0="4h", 1="den", 2="týden", 3="měsíc"]
 				  Chart item=Humidity_obyvak period=4h refresh=6000 visibility=[Chart_Period==0, Chart_Period=="Uninitialized"]
 				  Chart item=Humidity_obyvak period=D refresh=30000 visibility=[Chart_Period==1]
@@ -87,14 +87,14 @@ sitemap home label="CML"
 				  Chart item=Temp_chart period=W refresh=30000 visibility=[Chart_Period==2]
 				  Chart item=Temp_chart period=M refresh=30000 visibility=[Chart_Period==3]
 			  }
-				Text label="Tlak" icon="none" {
+				Text label="Tlak" icon="rain" {
 					Switch item=Chart_Period label="Chart Period" mappings=[0="4h", 1="den", 2="týden", 3="měsíc"]
 				  Chart item=Pressure period=4h refresh=6000 visibility=[Chart_Period==0, Chart_Period=="Uninitialized"]
 				  Chart item=Pressure period=D refresh=30000 visibility=[Chart_Period==1]
 				  Chart item=Pressure period=W refresh=30000 visibility=[Chart_Period==2]
 				  Chart item=Pressure period=M refresh=30000 visibility=[Chart_Period==3]
 				}
-				Text label="Světelnost" icon="none" {
+				Text label="Světelnost" icon="light_on" {
 					Switch item=Chart_Period label="Chart Period" mappings=[0="4h", 1="den", 2="týden", 3="měsíc"]
 				  Chart item=LightLevel period=4h refresh=6000 visibility=[Chart_Period==0, Chart_Period=="Uninitialized"]
 				  Chart item=LightLevel period=D refresh=30000 visibility=[Chart_Period==1]
